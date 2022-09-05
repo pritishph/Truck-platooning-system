@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+chan exiting,prepare_to_leave,keep_going,following,joining,ready_to_join, follow,Car_infront,Car_stoped,leaving_platoon,Manual_control,in_motion,waiting_for_following_truck_to_join_platoon , join_again, keep_in_motion, keep_following, rejoin, brake_on, keep_distance;
+
+
+</declaration>
+	<template>
+		<name x="5" y="5">leadtruck</name>
+		<declaration>// Place local declarations here.
+clock x;</declaration>
+		<location id="id0" x="-416" y="-340">
+			<name x="-425" y="-331">start</name>
+		</location>
+		<location id="id1" x="-204" y="-348">
+			<name x="-255" y="-340">in_motion</name>
+		</location>
+		<location id="id2" x="17" y="-348">
+			<name x="-76" y="-399">waiting_for_following_truck_to_join_platoon</name>
+			<label kind="invariant" x="25" y="-340">x&lt;=3</label>
+		</location>
+		<location id="id3" x="34" y="-136">
+			<name x="8" y="-119">joining_completed</name>
+		</location>
+		<location id="id4" x="-348" y="-229">
+			<name x="-416" y="-263">exiting_platooning</name>
+		</location>
+		<location id="id5" x="-212" y="-127">
+			<name x="-280" y="-51">keep_in_motion</name>
+			<label kind="invariant" x="-229" y="-110">x&gt;=1</label>
+		</location>
+		<init ref="id0"/>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id5"/>
+			<nail x="-289" y="-59"/>
+			<nail x="-153" y="-51"/>
+		</transition>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id4"/>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id5"/>
+			<label kind="guard" x="-102" y="-161">x&gt;=1</label>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id2"/>
+			<label kind="guard" x="-127" y="-348">x==0</label>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id3"/>
+			<label kind="synchronisation" x="-34" y="-255">joining!</label>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id1"/>
+		</transition>
+	</template>
+	<template>
+		<name>systemking</name>
+		<declaration>clock z;</declaration>
+		<location id="id6" x="-590" y="-146">
+			<name x="-600" y="-180">zero</name>
+		</location>
+		<location id="id7" x="-266" y="-157">
+			<name x="-276" y="-191">two</name>
+			<label kind="invariant" x="-276" y="-140">z&gt;=2</label>
+		</location>
+		<location id="id8" x="-362" y="-32">
+			<name x="-374" y="-18">three</name>
+		</location>
+		<location id="id9" x="-412" y="-179">
+			<name x="-422" y="-213">one</name>
+		</location>
+		<location id="id10" x="-574" y="-51">
+		</location>
+		<init ref="id6"/>
+		<transition>
+			<source ref="id8"/>
+			<target ref="id10"/>
+			<label kind="synchronisation" x="-494" y="-71">exiting?</label>
+			<label kind="assignment" x="-490" y="-37">z:=0</label>
+		</transition>
+		<transition>
+			<source ref="id9"/>
+			<target ref="id7"/>
+			<label kind="synchronisation" x="-378" y="-197">keep_going?</label>
+		</transition>
+		<transition>
+			<source ref="id7"/>
+			<target ref="id8"/>
+			<label kind="guard" x="-316" y="-86">z&gt;=1</label>
+			<label kind="synchronisation" x="-397" y="-88">following?</label>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id9"/>
+			<label kind="guard" x="-516" y="-157">z==0</label>
+			<label kind="synchronisation" x="-537" y="-188">joining?</label>
+		</transition>
+	</template>
+	<template>
+		<name>following_truck</name>
+		<declaration>clock y;</declaration>
+		<location id="id11" x="-433" y="-76">
+			<name x="-443" y="-110">ready_to_join</name>
+		</location>
+		<location id="id12" x="-217" y="107">
+			<name x="-260" y="124">Manual_control</name>
+		</location>
+		<location id="id13" x="-246" y="-72">
+			<name x="-272" y="-106">car_infront</name>
+		</location>
+		<location id="id14" x="8" y="102">
+			<name x="-25" y="127">prepare_to_leave</name>
+			<label kind="invariant" x="25" y="93">y&lt;=2</label>
+		</location>
+		<location id="id15" x="-28" y="-66">
+			<name x="-46" y="-102">follow</name>
+		</location>
+		<location id="id16" x="-455" y="106">
+			<name x="-528" y="124">leaving_platoon</name>
+		</location>
+		<init ref="id11"/>
+		<transition>
+			<source ref="id15"/>
+			<target ref="id15"/>
+			<label kind="guard" x="116" y="-110">y&gt;=2</label>
+			<label kind="synchronisation" x="112" y="-78">following!</label>
+			<nail x="87" y="-151"/>
+			<nail x="88" y="-41"/>
+		</transition>
+		<transition>
+			<source ref="id15"/>
+			<target ref="id14"/>
+			<label kind="guard" x="-10" y="-16">y&lt;=2</label>
+		</transition>
+		<transition>
+			<source ref="id13"/>
+			<target ref="id15"/>
+			<label kind="synchronisation" x="-176" y="-94">keep_going!</label>
+		</transition>
+		<transition>
+			<source ref="id11"/>
+			<target ref="id13"/>
+		</transition>
+		<transition>
+			<source ref="id12"/>
+			<target ref="id16"/>
+			<label kind="synchronisation" x="-437" y="89">exiting!</label>
+			<label kind="assignment" x="-437" y="106">y:=0</label>
+		</transition>
+		<transition>
+			<source ref="id14"/>
+			<target ref="id12"/>
+		</transition>
+	</template>
+	<system>// Place template instantiations here.
+Process1 = leadtruck();
+Process2 = following_truck();
+Process3 = systemking();
+// List one or more processes to be composed into a system.
+system Process1,Process2,Process3; 
+    </system>
+	<queries>
+		<query>
+			<formula></formula>
+			<comment></comment>
+		</query>
+	</queries>
+</nta>
